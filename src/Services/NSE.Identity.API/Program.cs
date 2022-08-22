@@ -15,6 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDefaultIdentity<IdentityUser>()
     .AddRoles<IdentityRole>()
+    .AddErrorDescriber<IdentityMessagesPortuguese>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
