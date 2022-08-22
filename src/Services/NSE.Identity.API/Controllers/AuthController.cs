@@ -10,9 +10,8 @@ using System.Text;
 
 namespace NSE.Identity.API.Controllers
 {
-    [ApiController]
     [Route("api/identity")]
-    public class AuthController : Controller
+    public class AuthController : ControllerBase
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
@@ -30,7 +29,7 @@ namespace NSE.Identity.API.Controllers
         [HttpPost("new-account")]
         public async Task<ActionResult> Register(UserRegisterViewModel userRegister)
         {
-            if(!ModelState.IsValid) return BadRequest();
+            if(!ModelState.IsValid) return CustomResponse(ModelState);
 
             var user = new IdentityUser
             {
@@ -43,26 +42,37 @@ namespace NSE.Identity.API.Controllers
 
             if (result.Succeeded)
             {
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return Ok(await GenerateJwt(userRegister.Email));
+                return CustomResponse(await GenerateJwt(userRegister.Email));
             }
 
-            return BadRequest();    
+            foreach (var error in result.Errors)
+            {
+                AddErrorsToList(error.Description);
+            }
+
+            return CustomResponse();
         }
 
         [HttpPost("authenticate")]
         public async Task<ActionResult> Login(UserLoginViewModel userLogin)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
 
             var result = await _signInManager.PasswordSignInAsync(userLogin.Email, userLogin.Password, false, true);
 
             if (result.Succeeded)
             {
-                return Ok(await GenerateJwt(userLogin.Email));
+                return CustomResponse(await GenerateJwt(userLogin.Email));
             }
 
-            return BadRequest();
+            if(result.IsLockedOut)
+            {
+                AddErrorsToList("Usuário bloqueado por conta de muitas tentativas inválidas.");
+                return CustomResponse();
+            }
+
+            AddErrorsToList("Usuário ou senha incorretos.");
+            return CustomResponse();
         }
 
         private async Task<UserResponseLogin> GenerateJwt(string email)
