@@ -35,14 +35,19 @@ namespace NSE.WebApp.MVC.Controllers
         [Route("login")]
         public async Task<IActionResult> Login(UserLogin userLogin)
         {
+            if (!ModelState.IsValid) return View(userLogin);
 
+            //API Registro
+            //Realizar login no App
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
         [Route("logout")]
         public async Task<IActionResult> Logout()
         {
-
+            return RedirectToAction("Index", "Home");
         }
     }
 }
