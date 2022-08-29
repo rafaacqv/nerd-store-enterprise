@@ -5,6 +5,7 @@
         public static void AddMvcConfiguration(this IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.RegisterServices();
         }
 
         public static void UseMvcConfiguration(this IApplicationBuilder app, IWebHostEnvironment env)
