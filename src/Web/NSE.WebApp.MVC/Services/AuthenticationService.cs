@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace NSE.WebApp.MVC.Services
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService : IAuthenticationServiceNSE
     {
         private readonly HttpClient _httpClient;
 

@@ -7,7 +7,7 @@ namespace NSE.WebApp.MVC.Config
     {
         public static void RegisterServices(this IServiceCollection services)
         {
-            services.AddHttpClient<IAuthenticationService, AuthenticationService>();
+            services.AddHttpClient<IAuthenticationServiceNSE, AuthenticationService>();
         }
     }
 }
